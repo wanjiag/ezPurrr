@@ -12,25 +12,25 @@
 #'
 samplesubset <- function(nest_df, index){
 
-  if(index > nrow(nest_df)){
-    stop(paste0('Index must be a numeric integer and range between 1 and ',
-                nrow(nest_df),
-                '.'))}
+  if(!missing(index)){
+    if(index > nrow(nest_df)){
+      stop(paste0('Index must be a numeric integer and range between 1 and ',
+                  nrow(nest_df),
+                  '.'))}
 
-  if(index%%1!=0){
-    stop('Index must be an integer.')}
+    if(index%%1!=0){
+      stop('Index must be an integer.')}
 
-  if(!"data" %in% colnames(nest_df)){
-    stop('The dataframe does not contain a column named "data" with data frames.
-         Please double check your data frame.
-         Did you use nest() for your data frame first?')}
+    if(!"data" %in% colnames(nest_df)){
+      stop('The dataframe does not contain a column named "data" with data frames.
+           Please double check your data frame.
+           Did you use nest() for your data frame first?')}
 
-  if(missing(index)){
-    print('random')
-    n <- sample(1:nrow(nest_df), 1)
+    n = index
   }
   else{
-    n = index
+    print('a row is selected randomly')
+    n <- sample(1:nrow(nest_df), 1)
   }
 
   list(subset(nest_df[n,], select = -data), nest_df$data[n][[1]])
