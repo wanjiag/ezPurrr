@@ -37,14 +37,14 @@ samplesubset <- function(nest_df, index){
 
 }
 
-# Warnings:
+# Unsolved Warnings:
 
-#Non-standard file/directory found at top level:
+# Non-standard file/directory found at top level:
 #  ‘LICENSE.md’
 
-#samplesubset: no visible binding for global variable ‘data’
-#Undefined global functions or variables:
+# samplesubset: no visible binding for global variable ‘data’
+# Undefined global functions or variables:
 #  data
-#Consider adding
-#importFrom("utils", "data")
-#to your NAMESPACE file.
+# Consider adding
+# importFrom("utils", "data")
+# to your NAMESPACE file.
