@@ -33,7 +33,7 @@ samplesubset <- function(nest_df, index){
     n <- sample(1:nrow(nest_df), 1)
   }
 
-  list(subset(nest_df[n,], select = -data), nest_df$data[n][[1]])
+  list(subset(nest_df[n,], select = -nest_df$data), nest_df$data[n][[1]])
 
 }
 
