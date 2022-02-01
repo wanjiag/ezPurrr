@@ -4,12 +4,14 @@
 #' This function will return a list with the first item being the grouping
 #' variable of the data frame, and second item being the subsetted datafram.
 #'
-#' @param nest_df The nested data frame to be subset from
+#' @param nest_df The nested data frame to be subset from.
+#'                The right-most column must be a dataframe type with name 'data'.
 #' @param index The index of the data set to be returned from. If no index is
 #'              provided, a random subset will be returned. need to indicate this is optional
 #'
 #' @export
 #'
+
 samplesubset <- function(nest_df, index){
 
   if(!missing(index)){
@@ -27,24 +29,13 @@ samplesubset <- function(nest_df, index){
            Did you use nest() for your data frame first?')}
 
     n = index
+
   }
   else{
     print('a row is selected randomly')
     n <- sample(1:nrow(nest_df), 1)
   }
 
-  list(subset(nest_df[n,], select = -nest_df$data), nest_df$data[n][[1]])
+  list(nest_df[n,c(1:ncol(nest_df)-1)], nest_df$data[n][[1]])
 
 }
-
-# Unsolved Warnings:
-
-# Non-standard file/directory found at top level:
-#  ‘LICENSE.md’
-
-# samplesubset: no visible binding for global variable ‘data’
-# Undefined global functions or variables:
-#  data
-# Consider adding
-# importFrom("utils", "data")
-# to your NAMESPACE file.
