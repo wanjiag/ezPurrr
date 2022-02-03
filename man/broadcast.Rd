@@ -11,6 +11,9 @@ broadcast(nest_df, f, output_type = "list")
 Must include a column as dataframe type with name 'data'.}
 
 \item{f}{The function to be broadcasted.}
+
+\item{output_type}{The expected output column type. The default is a list.
+Options: 'list'; 'double'}
 }
 \description{
 This function will return a dataframe with last item being the result of broadcasting.
