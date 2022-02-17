@@ -2,9 +2,10 @@
 
 export(broadcast)
 export(sample_data)
-export(sample_grouping)
+export(sample_group)
 export(sample_row)
 importFrom(dplyr,mutate)
 importFrom(magrittr,"%>%")
 importFrom(purrr,map_dbl)
 importFrom(purrr,pmap)
+importFrom(tidyr,nest)

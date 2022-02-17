@@ -28,3 +28,5 @@ broadcast <- function(nest_df, f, output_type = 'list'){
 
   new_df
 }
+
+

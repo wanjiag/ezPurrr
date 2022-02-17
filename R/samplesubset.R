@@ -31,8 +31,8 @@ sampling_check <- function(nest_df, index){
 
   }
   else{
-    print('a row is selected randomly')
     n <- sample(1:nrow(nest_df), 1)
+    warning(paste0('row ', n, ' is selected randomly'))
   }
 
   n
@@ -77,7 +77,7 @@ sample_row <- function(nest_df, index){
 #' @export
 #'
 
-sample_grouping <- function(nest_df, index){
+sample_group <- function(nest_df, index){
 
   n = sampling_check(nest_df, index)
 

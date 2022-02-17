@@ -2,6 +2,7 @@
 "_PACKAGE"
 
 #' @importFrom dplyr mutate
+#' @importFrom tidyr nest
 #' @importFrom purrr pmap map_dbl
 #' @importFrom magrittr %>%
 #'
