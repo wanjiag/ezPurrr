@@ -41,9 +41,9 @@ set.seed(315)
 
 set.seed(315)
 test_that("random sampling and warning message", {
-  expect_warning(v1 <- sample_row(nest_df), "row 1 is selected randomly")
-  expect_warning(v2 <- sample_group(nest_df), "row 2 is selected randomly")
-  expect_warning(v3 <- sample_data(nest_df), "row 1 is selected randomly")
+  expect_message(v1 <- sample_row(nest_df), "row 1 is selected randomly")
+  expect_message(v2 <- sample_group(nest_df), "row 2 is selected randomly")
+  expect_message(v3 <- sample_data(nest_df), "row 1 is selected randomly")
   expect_equal(
     v1, list(nest_df[1,c(1:ncol(nest_df)-1)],nest_df[1,]$data[[1]]))
   expect_equal(
