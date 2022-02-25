@@ -4,7 +4,7 @@
 \alias{broadcast}
 \title{broadcasting a function to all other rows}
 \usage{
-broadcast(nest_df, f, output_type = "list")
+broadcast(nest_df, f, output_type = "list", ...)
 }
 \arguments{
 \item{nest_df}{The nested data frame to be broadcasted.
@@ -14,6 +14,8 @@ Must include a column as dataframe type with name 'data'.}
 
 \item{output_type}{The expected output column type. The default is a list.
 Options: 'list'; 'double'}
+
+\item{...}{Additional arguments passed to \code{f}.}
 }
 \description{
 This function will return a dataframe with last item being the result of broadcasting.
