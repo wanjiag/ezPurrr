@@ -1,0 +1,87 @@
+---
+title: "Using ezPurrr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{using-ezPurrr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ezPurrr)
+```
+
+This is just and example code chunk where Daniel was playing with the package.
+
+```{r }
+library(palmerpenguins)
+library(purrr)
+library(dplyr)
+library(ggplot2)
+library(ezPurrr)
+
+nested_d <- penguins %>% 
+  nest_by(species) 
+
+ex_data <- nested_d %>% 
+  sample_data()
+
+ggplot(ex_data, aes(sex, flipper_length_mm)) +
+  geom_boxplot(aes(fill = sex)) +
+  guides(fill = "none") +
+  theme_minimal()
+
+# wrap in a function
+p <- function(d) {
+  ggplot(d, aes(.data$sex, .data$flipper_length_mm)) +
+    geom_boxplot(aes(fill = .data$sex)) +
+    guides(fill = "none") +
+    theme_minimal()
+}
+
+# this doesn't seem to work
+#broadcast(nested_d, p)
+
+# this does, so I would have expected the above to
+map(nested_d$data, p)
+
+# try a second one
+ex_data %>% 
+  filter(bill_length_mm > 50) %>% 
+  select(bill_length_mm, bill_depth_mm) %>% 
+  cor() 
+
+# wrap in function
+f <- function(d) {
+  d %>% 
+    filter(.data$bill_length_mm > 50) %>% 
+    select(.data$bill_length_mm, .data$bill_depth_mm) %>% 
+    cor() 
+}
+# broadcast(nested_d, f) # also doesn't work
+map(nested_d$data, f) # this does
+
+# Me messing about with quosures unsuccessfully 
+# tmp <- quo(
+#   data %>% 
+#     filter(bill_length_mm > 50) %>% 
+#     select(bill_length_mm, bill_depth_mm) %>% 
+#     cor()
+#   )
+# 
+# tmp
+# 
+# library(rlang)
+# expr <- quo_get_expr(tmp)
+# chr_expr <- gsub("ex_data", "data", expr)
+# expr <- parse_expr(paste0(parse_exprs(chr_expr[-1]), collapse = " %>% "))
+# 
+# map(nested_d, !!tmp)
+```
