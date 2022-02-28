@@ -1,4 +1,3 @@
-
 #' Sanity check for input dataframe, then return the index of the row to be sampled from.
 #'
 #' This function will return an index to be sampled from the input dataframe.
@@ -13,30 +12,43 @@
 
 sampling_check <- function(nest_df, index){
 
-  if(!"data" %in% colnames(nest_df)){
-    stop('The dataframe does not contain a column named "data" with data frame type.
-           Please double check your data frame.
-           Did you use nest() for your data frame first?')}
+  if(!"data" %in% colnames(nest_df)) {
+    stop(
+    'The dataframe does not contain a column named "data" with data frame type.
+     Please double check your data frame.
+     Did you use `purrr::nest()` for your data frame first?'
+    )
+  }
 
-  if(!missing(index)){
-    if(index > nrow(nest_df)){
-      stop(paste0('Index must be a numeric integer and range between 1 and ',
-                  nrow(nest_df),
-                  '.'))}
-
-    if(index%%1!=0){
-      stop('Index must be an integer.')}
-
+  if (!missing(index)){
+    if (index > nrow(nest_df)) {
+      stop(
+        paste0(
+          'Index must be a numeric integer and range between 1 and ',
+          nrow(nest_df),
+          '.'
+        )
+      )
+    }
+    if (!is_integer(index)) {
+      stop('Index must be an integer.')
+    }
     n = index
-
   }
-  else{
-    n <- sample(1:nrow(nest_df), 1)
-    warning(paste0('row ', n, ' is selected randomly'))
+  else {
+    n <- sample(seq_len(nrow(nest_df)), 1)
+    message(paste0('row ', n, ' is selected randomly'))
   }
-
   n
+}
 
+#' Checks if a number is an integer
+#' @param x A number to check
+#' @return Logical, with \code{TRUE} if \code{x} is an integer.
+#' @keywords Internal
+#' @noRd
+is_integer <- function(x) {
+  x %% 1 == 0
 }
 
 
@@ -56,9 +68,9 @@ sampling_check <- function(nest_df, index){
 
 sample_row <- function(nest_df, index){
 
-  n = sampling_check(nest_df, index)
+  n <- sampling_check(nest_df, index)
 
-  list(nest_df[n,c(1:ncol(nest_df)-1)], nest_df$data[n][[1]])
+  list(nest_df[n, c(seq_len(ncol(nest_df)) - 1)], nest_df$data[n][[1]])
 
 }
 
@@ -79,9 +91,9 @@ sample_row <- function(nest_df, index){
 
 sample_group <- function(nest_df, index){
 
-  n = sampling_check(nest_df, index)
+  n <- sampling_check(nest_df, index)
 
-  nest_df[n,c(1:ncol(nest_df)-1)]
+  nest_df[n, c(seq_len(ncol(nest_df)) - 1)]
 
 }
 
@@ -102,7 +114,7 @@ sample_group <- function(nest_df, index){
 
 sample_data <- function(nest_df, index){
 
-  n = sampling_check(nest_df, index)
+  n <- sampling_check(nest_df, index)
 
   nest_df$data[n][[1]]
 
