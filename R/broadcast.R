@@ -18,28 +18,24 @@ broadcast <- function(nest_df, f, output_type = 'list', ...){
   # TODO: adding optional input for grouping variables
 
   if (output_type == 'list'){
-    new_df <- mutate(
-      nest_df,
       output = pmap(
         .l = list(nest_df$data),
         .f = f,
         ...
         )
-      )
+      nest_df$output = output
   }
 
   if (output_type == 'double'){
-    new_df <- mutate(
-      nest_df,
       output = map_dbl(
         .x = nest_df$data,
         .f = f,
         ...
       )
-    )
+      nest_df$output = output
   }
 
-  new_df
+  nest_df
 }
 
 

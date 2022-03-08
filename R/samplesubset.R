@@ -70,7 +70,7 @@ sample_row <- function(nest_df, index){
 
   n <- sampling_check(nest_df, index)
 
-  list(nest_df[n, c(seq_len(ncol(nest_df)) - 1)], nest_df$data[n][[1]])
+  list(nest_df$data[n][[1]], nest_df[n, c(seq_len(ncol(nest_df)) - 1)])
 
 }
 

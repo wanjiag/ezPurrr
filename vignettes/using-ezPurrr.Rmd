@@ -16,11 +16,107 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(ezPurrr)
+library(tidyverse)
 ```
 
-This is just and example code chunk where Daniel was playing with the package.
 
-```{r }
+Create a nested dataset. 
+```{r}
+nest_df <- palmerpenguins::penguins %>%
+  #group_by(species, island, sex, year) %>%
+  group_by(island, species) %>%
+  nest()
+
+head(nest_df)
+```
+
+### `sample_*()` methods.
+
+sample_row() returns one random or one particular row (with `index` argument) from the nested dataset as a list. The first item of the list is the grouping variable, and the second item of the list is the dataset.
+```{r}
+nest_df %>% sample_row()
+
+nest_df %>% sample_row(index = 3)
+```
+
+sample_data() returns one random or one particular data column (with `index` argument) from the nested dataset. This is the same as the first item from the list that was produced by `sample_row()`.
+```{r}
+nest_df %>% sample_data()
+
+nest_df %>% sample_data(index = 3)
+```
+
+sample_group() returns one random or one particular grouping columns (with `index` argument) from the nested dataset.This is the same as the second item from the list that was produced by `sample_row()`.
+```{r}
+nest_df %>% sample_group()
+
+nest_df %>% sample_group(index = 3)
+```
+
+### broadcst
+
+You can use the sampling dataset to test the code you want to be applied for each row, such as figures or `lm()` models.
+
+Plotting:
+```{r}
+nest_df %>% 
+  sample_data(index = 3) %>% 
+  ggplot(aes(x = bill_length_mm,
+                           y = bill_depth_mm,
+                           color = body_mass_g)) +
+  geom_point()
+```
+
+Then, by wrapping it into a function, it can be easily broadcasted into each row of the nested dataset. 
+
+```{r}
+plotting <- function(data){
+  data %>% ggplot(aes(x = bill_length_mm,
+                             y = bill_depth_mm,
+                             color = body_mass_g)) +
+    geom_point()
+}
+
+broadcasted_df = nest_df %>% broadcast(plotting)
+
+broadcasted_df$output[[1]]
+
+```
+
+You can also use it for modeling:
+```{r}
+tmp_df = nest_df %>% 
+  sample_data(index = 3)
+
+lm(body_mass_g ~ bill_length_mm * bill_depth_mm, data = tmp_df)
+
+modeling <- function(data){
+   lm(body_mass_g ~ bill_length_mm + bill_depth_mm, data = data)
+}
+
+nest_df %>% broadcast(modeling) %>% .$output
+
+```
+
+Instead of a list, you can also make the output a number (double).
+```{r}
+
+modeling <- function(data){
+  model = lm(body_mass_g ~ bill_length_mm + bill_depth_mm, data = data)
+  model$coefficients[2] # the slope for bill_length_mm
+}
+
+nest_df %>% broadcast(modeling) %>% .$output
+```
+
+
+
+
+
+
+```{r eval=FALSE, include=FALSE}
+#This is just and example code chunk where Daniel was playing with the package.
+
 library(palmerpenguins)
 library(purrr)
 library(dplyr)
