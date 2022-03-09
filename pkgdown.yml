@@ -1,0 +1,10 @@
+pandoc: 2.7.3
+pkgdown: 2.0.2
+pkgdown_sha: ~
+articles:
+  using-ezPurrr: using-ezPurrr.html
+last_built: 2022-03-09T23:44Z
+urls:
+  reference: https://wanjiag.github.io/ezPurrr/reference
+  article: https://wanjiag.github.io/ezPurrr/articles
+
