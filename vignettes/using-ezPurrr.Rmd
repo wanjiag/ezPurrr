@@ -1,5 +1,5 @@
 ---
-title: "Using ezPurrr"
+title: "ezPurrr example"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{using-ezPurrr}
@@ -20,40 +20,59 @@ library(tidyverse)
 ```
 
 
-Create a nested dataset. 
+A nested dataset is needed to use functions.
+
 ```{r}
 nest_df <- palmerpenguins::penguins %>%
-  #group_by(species, island, sex, year) %>%
   group_by(island, species) %>%
   nest()
 
 head(nest_df)
 ```
 
-### `sample_*()` methods.
+# `sample_*()`
 
-sample_row() returns one random or one particular row (with `index` argument) from the nested dataset as a list. The first item of the list is the grouping variable, and the second item of the list is the dataset.
+
+### `sample_row()`
+
+sample_row() returns one random or one particular row (with `index` argument) from the nested data as a list or a data frame. If returning a list (default), one row of the nested data will the first item of the list, and each of the other grouping variables will be another item in the list. If returning a data frame (with `type = df` argument), then the data frame will include one row of the nested data, as well as each grouping variable as a column with identical repeated content.
+
+
 ```{r}
+
+# In here, species and island are the grouping variables.
+
 nest_df %>% sample_row()
 
-nest_df %>% sample_row(index = 3)
+nest_df %>% sample_row(index = 3) %>% head()
+
+nest_df %>% sample_row(index = 3, type = 'df') %>% head()
+
 ```
 
-sample_data() returns one random or one particular data column (with `index` argument) from the nested dataset. This is the same as the first item from the list that was produced by `sample_row()`.
+### `sample_data()`
+
+sample_data() returns one random or one particular data column (with `index` argument) from the nested data with no grouping variables.
+
 ```{r}
 nest_df %>% sample_data()
 
 nest_df %>% sample_data(index = 3)
 ```
 
-sample_group() returns one random or one particular grouping columns (with `index` argument) from the nested dataset.This is the same as the second item from the list that was produced by `sample_row()`.
+### `sample_group()`
+
+sample_group() returns one random or one particular grouping columns (with `index` argument) from the nested dataset with no data.
+
 ```{r}
 nest_df %>% sample_group()
 
 nest_df %>% sample_group(index = 3)
 ```
 
-### broadcst
+# `broadcast()`
+
+### `broadcast()`
 
 You can use the sampling dataset to test the code you want to be applied for each row, such as figures or `lm()` models.
 
@@ -83,7 +102,7 @@ broadcasted_df$output[[1]]
 
 ```
 
-You can also use it for modeling:
+You can also use it for modeling or other functions:
 ```{r}
 tmp_df = nest_df %>% 
   sample_data(index = 3)
@@ -107,11 +126,54 @@ modeling <- function(data){
 }
 
 nest_df %>% broadcast(modeling) %>% .$output
+
 ```
 
+### `broadcast_group()`
+
+`broadcast_group()` allows you to also use grouping variables in the function. It is still under develop so currently it only works in a more limited way. For example, you can include grouping variables as title for plots.
 
 
+```{r}
+df = nest_df %>% 
+  sample_row(index = 3, type = 'list')
 
+plotting <- function(data, species, island){
+  ggplot(data, aes(x = bill_length_mm,
+                             y = bill_depth_mm,
+                             color = body_mass_g)) +
+    geom_point() +
+    labs(title = paste(species, island))
+}
+
+plotting(df$data, df$species, df$island)
+
+nest_df = nest_df %>% broadcast_group(plotting)
+
+nest_df$output[[1]]
+nest_df$output[[4]]
+
+```
+
+# Testing::
+
+```{r eval=FALSE, include=FALSE}
+tmp <- quo(
+ data %>% 
+   filter(bill_length_mm > 50) %>% 
+   select(bill_length_mm, bill_depth_mm) %>% 
+   cor()
+ )
+
+tmp
+
+library(rlang)
+expr <- quo_get_expr(tmp)
+chr_expr <- gsub("ex_data", "data", expr)
+expr <- parse_expr(paste0(parse_exprs(chr_expr[-1]), collapse = " %>% "))
+ 
+map(nested_d, !!tmp)
+```
 
 
 ```{r eval=FALSE, include=FALSE}

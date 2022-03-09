@@ -5,7 +5,7 @@
 \title{Sampling one row from a nested dataframe. The sampling could be done
 either randomly or a specific row could be indicated.}
 \usage{
-sample_row(nest_df, index)
+sample_row(nest_df, index, type = "list")
 }
 \arguments{
 \item{nest_df}{The nested dataframe to be sampled from.
@@ -13,8 +13,14 @@ The right-most column must be a dataframe type with name 'data'.}
 
 \item{index}{Optional. The index of the dataframe to be sampled from. If no index is
 provided, a random subset will be returned.}
+
+\item{type}{Optional. 'list' or 'df'. The type of return data structure.
+List is the default.}
 }
 \description{
-This function will return a list with the first item being the grouping
-variable of the dataframe, and second item being the nested data.
+The default type of return is \code{list}, which will return the data frame
+as the first item, and grouping variables as other items in the list.
+If the return type is indicated as \code{df}, this function can also return
+a dataframe with the nested data, and grouping variables will be
+transformed as columns with identical values.
 }

@@ -8,6 +8,13 @@
 \description{
 What the package does (one paragraph).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://wanjiag.github.io/ezPurrr/}
+}
+
+}
 \author{
 \strong{Maintainer}: Wanjia Guo \email{wanjiag@uoregon.edu} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
 
