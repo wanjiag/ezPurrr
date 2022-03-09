@@ -15,8 +15,6 @@
 
 broadcast = function(nest_df, f, output_type = 'list', ...){
 
-  # TODO: adding optional input for grouping variables
-
   if (output_type == 'list'){
       output = pmap(
         .l = list(nest_df$data),
@@ -50,7 +48,7 @@ broadcast = function(nest_df, f, output_type = 'list', ...){
 #'
 broadcast_group = function(nest_df, f){
 
-  v = regmatches(deparse(plotting)[1], gregexpr("(?<=\\().*?(?=\\))", deparse(plotting)[1], perl=T))[[1]]
+  v = regmatches(deparse(f)[1], gregexpr("(?<=\\().*?(?=\\))", deparse(f)[1], perl=T))[[1]]
 
   v2 = str_split(v, pattern = ',')[[1]]
 

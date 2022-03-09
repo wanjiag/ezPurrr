@@ -80,7 +80,7 @@ sample_row = function(nest_df, index, type = 'list'){
 
     group = nest_df[n, c(seq_len(ncol(nest_df)) - 1)]
 
-    group_name = group %>% group_vars()
+    group_name = group_vars(group)
     list_name = c('data')
 
     for (i in group_name){

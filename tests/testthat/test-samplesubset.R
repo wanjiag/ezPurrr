@@ -57,7 +57,7 @@ test_that("random sampling and warning message", {
   expect_equal(
     v2, test_df)
   expect_equal(
-    v3,nest_df[,c(1:ncol(nest_df)-1)])
+    v3,sub_nest_df[,c(1:ncol(sub_nest_df)-1)])
   expect_equal(
     v4, nest_df[1,]$data[[1]])
 })

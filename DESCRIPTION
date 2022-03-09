@@ -13,7 +13,8 @@ Imports:
     dplyr,
     tidyr,
     magrittr,
-    purrr
+    purrr,
+    stringr
 Suggests: 
     covr,
     rmarkdown,
