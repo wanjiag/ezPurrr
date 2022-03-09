@@ -19,7 +19,9 @@ Suggests:
     covr,
     rmarkdown,
     knitr,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    palmerpenguins,
+    ggplot2
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 URL: https://wanjiag.github.io/ezPurrr/

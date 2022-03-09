@@ -16,9 +16,10 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(ezPurrr)
-library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
 ```
-
 
 A nested dataset is needed to use functions.
 
@@ -138,7 +139,7 @@ nest_df %>% broadcast(modeling) %>% .$output
 df = nest_df %>% 
   sample_row(index = 3, type = 'list')
 
-plotting <- function(data, species, island){
+plotting = function(data, species, island){
   ggplot(data, aes(x = bill_length_mm,
                              y = bill_depth_mm,
                              color = body_mass_g)) +
