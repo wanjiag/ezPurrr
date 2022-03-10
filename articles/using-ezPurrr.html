@@ -181,21 +181,21 @@
 <p>sample_data() returns one random or one particular data column (with <code>index</code> argument) from the nested data with no grouping variables.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/sample_data.html">sample_data</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; row 4 is selected randomly</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 124 × 6</span></span>
+<span class="co">#&gt; row 3 is selected randomly</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 56 × 6</span></span>
 <span class="co">#&gt;    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year</span>
 <span class="co">#&gt;             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>           46.1          13.2               211        <span style="text-decoration: underline;">4</span>500 female  <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>           50            16.3               230        <span style="text-decoration: underline;">5</span>700 male    <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>           48.7          14.1               210        <span style="text-decoration: underline;">4</span>450 female  <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>           50            15.2               218        <span style="text-decoration: underline;">5</span>700 male    <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>           47.6          14.5               215        <span style="text-decoration: underline;">5</span>400 male    <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>           46.5          13.5               210        <span style="text-decoration: underline;">4</span>550 female  <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>           45.4          14.6               211        <span style="text-decoration: underline;">4</span>800 female  <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>           46.7          15.3               219        <span style="text-decoration: underline;">5</span>200 male    <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>           43.3          13.4               209        <span style="text-decoration: underline;">4</span>400 female  <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span>           46.8          15.4               215        <span style="text-decoration: underline;">5</span>150 male    <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 114 more rows</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>           39.5          16.7               178        <span style="text-decoration: underline;">3</span>250 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>           37.2          18.1               178        <span style="text-decoration: underline;">3</span>900 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>           39.5          17.8               188        <span style="text-decoration: underline;">3</span>300 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>           40.9          18.9               184        <span style="text-decoration: underline;">3</span>900 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>           36.4          17                 195        <span style="text-decoration: underline;">3</span>325 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>           39.2          21.1               196        <span style="text-decoration: underline;">4</span>150 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>           38.8          20                 190        <span style="text-decoration: underline;">3</span>950 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>           42.2          18.5               180        <span style="text-decoration: underline;">3</span>550 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>           37.6          19.3               181        <span style="text-decoration: underline;">3</span>300 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span>           39.8          19.1               184        <span style="text-decoration: underline;">4</span>650 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 46 more rows</span></span>
 
 <span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/sample_data.html">sample_data</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 56 × 6</span></span>
@@ -220,12 +220,12 @@
 <p>sample_group() returns one random or one particular grouping columns (with <code>index</code> argument) from the nested dataset with no data.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/sample_group.html">sample_group</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; row 1 is selected randomly</span>
+<span class="co">#&gt; row 4 is selected randomly</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 2</span></span>
 <span class="co">#&gt; <span style="color: #949494;"># Groups:   island, species [1]</span></span>
-<span class="co">#&gt;   species island   </span>
-<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Adelie  Torgersen</span>
+<span class="co">#&gt;   species island</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Gentoo  Biscoe</span>
 
 <span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/sample_group.html">sample_group</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 2</span></span>
