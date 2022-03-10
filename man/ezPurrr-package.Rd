@@ -4,9 +4,9 @@
 \name{ezPurrr-package}
 \alias{ezPurrr}
 \alias{ezPurrr-package}
-\title{ezPurrr: What the Package Does (One Line, Title Case)}
+\title{ezPurrr: Make Purrr Easier To Use.}
 \description{
-What the package does (one paragraph).
+This is a facilitating package for Purrr with easy sampling and apply functions to all rows for a nested dataset.
 }
 \seealso{
 Useful links:

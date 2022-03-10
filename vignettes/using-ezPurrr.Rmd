@@ -1,5 +1,5 @@
 ---
-title: "ezPurrr example"
+title: "Example"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{using-ezPurrr}

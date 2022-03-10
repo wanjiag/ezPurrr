@@ -1,10 +1,10 @@
 Package: ezPurrr
-Title: What the Package Does (One Line, Title Case)
+Title: Make Purrr Easier To Use.
 Version: 0.0.0.9000
 Authors@R: 
     person("Wanjia", "Guo", , "wanjiag@uoregon.edu", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: This is a facilitating package for Purrr with easy sampling and apply functions to all rows for a nested dataset. 
 License: CC BY 4.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
