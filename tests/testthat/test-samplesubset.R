@@ -46,3 +46,15 @@ test_that("index sampling", {
     nest_df[2,]$data[[1]])
 })
 
+sub_nest_df = nest_df[1,]
+test_that("random sampling and warning message", {
+  expect_equal(
+    sample_row(sub_nest_df), test_list)
+  expect_equal(
+    sample_row(sub_nest_df, type = 'df'), test_df)
+  expect_equal(
+    sample_group(sub_nest_df),sub_nest_df[,c(1:ncol(sub_nest_df)-1)])
+  expect_equal(
+    sample_data(sub_nest_df), nest_df[1,]$data[[1]])
+})
+
