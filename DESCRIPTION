@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Wanjia", "Guo", , "wanjiag@uoregon.edu", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: This is a facilitating package for Purrr with easy sampling and apply functions to all rows for a nested dataset. 
+Description: ezPurrr is a facilitating package for `Purrr`. It has straightforward `sample` functions to sampling from a nested data set. It can also easily `broadcast` a written function to all other rows of the data set. 
 License: CC BY 4.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

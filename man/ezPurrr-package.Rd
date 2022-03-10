@@ -6,7 +6,7 @@
 \alias{ezPurrr-package}
 \title{ezPurrr: Make Purrr Easier To Use.}
 \description{
-This is a facilitating package for Purrr with easy sampling and apply functions to all rows for a nested dataset.
+ezPurrr is a facilitating package for `Purrr`. It has straightforward `sample` functions to sampling from a nested data set. It can also easily `broadcast` a written function to all other rows of the data set.
 }
 \seealso{
 Useful links:
