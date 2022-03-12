@@ -4,14 +4,16 @@
 \name{ezPurrr-package}
 \alias{ezPurrr}
 \alias{ezPurrr-package}
-\title{ezPurrr: Make Purrr Easier To Use.}
+\title{ezPurrr: Makes functional programming with purrr easier to use}
 \description{
 ezPurrr is a facilitating package for `Purrr`. It has straightforward `sample` functions to sampling from a nested data set. It can also easily `broadcast` a written function to all other rows of the data set.
 }
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://github.com/wanjiag/ezPurrr}
   \item \url{https://wanjiag.github.io/ezPurrr/}
+  \item Report bugs at \url{https://github.com/wanjiag/ezPurrr/issues}
 }
 
 }

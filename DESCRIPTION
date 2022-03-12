@@ -1,5 +1,5 @@
 Package: ezPurrr
-Title: Make Purrr Easier To Use.
+Title: Makes functional programming with purrr easier to use
 Version: 0.0.0.9000
 Authors@R: 
     person("Wanjia", "Guo", , "wanjiag@uoregon.edu", role = c("aut", "cre"),
@@ -24,4 +24,6 @@ Suggests:
     ggplot2
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-URL: https://wanjiag.github.io/ezPurrr/
+URL: https://github.com/wanjiag/ezPurrr, 
+     https://wanjiag.github.io/ezPurrr/
+BugReports: https://github.com/wanjiag/ezPurrr/issues
