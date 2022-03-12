@@ -14,14 +14,16 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+The **ezPurrr** package is built on top of the [**purrr**]() library. The purpose of the package is to help make functional programming workflows more simple and efficient. Let's start by loading ezPurrr and a few other packages we'll use for data manipulation in this vignette.
+
+```{r setup, message = FALSE}
 library(ezPurrr)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 ```
 
-A nested dataset is needed to use functions.
+**ezPurrr** requires a *nested* dataset. For example
 
 ```{r}
 nest_df <- palmerpenguins::penguins %>%
@@ -31,79 +33,119 @@ nest_df <- palmerpenguins::penguins %>%
 head(nest_df)
 ```
 
+This data frame has columns for the penguin species and the island on which the data was collected but, critically, an additional *data* column. This column is a list column that has all the data for the corresponding species/island row. All functions in **ezPurrr** require the data to first be in this format.
+
+From here, we want to be able to work with the data like normal, but it's difficult when the data are in this list column format. This is where teh `sample_*()` functions come in.
+
 # `sample_*()`
 
 
 ### `sample_row()`
 
-sample_row() returns one random or one particular row (with `index` argument) from the nested data as a list or a data frame. If returning a list (default), one row of the nested data will the first item of the list, and each of the other grouping variables will be another item in the list. If returning a data frame (with `type = df` argument), then the data frame will include one row of the nested data, as well as each grouping variable as a column with identical repeated content.
+The `sample_row()` function returns one random or one particular row (when an `index` argument is supplied) from the nested data as a list or a data frame. If returning a list (default), the first item of the list with be the data from the given row, while the remaining elements of the list will be the grouping variables from that row (i.e., the species and island for the corresponding row, in our previous example). If returning a data frame (with `type = df` argument), then the data frame will include one row of the nested data, as well as each grouping variable as a column (with identical repeated content).
 
-
+For example
 ```{r}
+nest_df %>% 
+  sample_row()
 
-# In here, species and island are the grouping variables.
+nest_df %>% 
+  sample_row(index = 3) %>% 
+  head()
 
-nest_df %>% sample_row()
-
-nest_df %>% sample_row(index = 3) %>% head()
-
-nest_df %>% sample_row(index = 3, type = 'df') %>% head()
-
+nest_df %>% 
+  sample_row(index = 3, type = 'df') %>% 
+  head()
 ```
+
+<!-- I would probably describe each of the above in more detail -->
 
 ### `sample_data()`
 
-sample_data() returns one random or one particular data column (with `index` argument) from the nested data with no grouping variables.
+sample_data() returns one random or one particular data column (with `index` argument) from the nested data. The primary difference between `sample_data()` versus `sample_row()` is that the grouping variables are not returned - just the data. For example:
 
 ```{r}
-nest_df %>% sample_data()
+nest_df %>% 
+  sample_data()
 
-nest_df %>% sample_data(index = 3)
+nest_df %>% 
+  sample_data(index = 3)
 ```
 
 ### `sample_group()`
 
-sample_group() returns one random or one particular grouping columns (with `index` argument) from the nested dataset with no data.
+Finally, `sample_group()` returns one random or one particular grouping columns (with `index` argument) from the nested dataset with no data. For example:
 
 ```{r}
-nest_df %>% sample_group()
+nest_df %>% 
+  sample_group()
 
-nest_df %>% sample_group(index = 3)
+nest_df %>% 
+  sample_group(index = 3)
 ```
 
 # `broadcast()`
 
 ### `broadcast()`
 
-You can use the sampling dataset to test the code you want to be applied for each row, such as figures or `lm()` models.
+Generally, we will use the data we have sampled to conduct some operations. Once we've conducted those operations we just need to wrap them all in a function, then `broadcast()` them across the sets of data (i.e., all rows). 
 
-Plotting:
+In other words, the sampling dataset is used to test the code you want to be applied for each row, such as figures, models, or transformations.
+
+Let's look at an example for plotting. First, we create our sample data.
+
 ```{r}
-nest_df %>% 
-  sample_data(index = 3) %>% 
-  ggplot(aes(x = bill_length_mm,
-                           y = bill_depth_mm,
-                           color = body_mass_g)) +
+samp <- nest_df %>% 
+  sample_data(index = 3)
+
+samp
+```
+
+Next, we write the code to create our plot, using `samp` as our sample data to test our code.
+
+```{r }
+ggplot(samp, aes(x = bill_length_mm,
+                 y = bill_depth_mm,
+                 color = body_mass_g)) +
   geom_point()
 ```
 
-Then, by wrapping it into a function, it can be easily broadcasted into each row of the nested dataset. 
+Finally, we can wrap this into a function. 
 
 ```{r}
 plotting <- function(data){
-  data %>% ggplot(aes(x = bill_length_mm,
-                             y = bill_depth_mm,
-                             color = body_mass_g)) +
+  ggplot(data, aes(x = bill_length_mm,
+                   y = bill_depth_mm,
+                   color = body_mass_g)) +
     geom_point()
 }
-
-broadcasted_df = nest_df %>% broadcast(plotting)
-
-broadcasted_df$output[[1]]
-
 ```
 
-You can also use it for modeling or other functions:
+Notice the code above is exactly as we had before, we've just changed our sample data set to `data` as an argument within a function. Normally, writing functions for plotting (and many other functions in the tidyverse) is difficult because of non-standard evaluation, but in this case we don't have to worry about any of that.
+
+Now, we can `broadcast()` the function to all of the data!
+
+```{r}
+broadcasted_df = nest_df %>% 
+  broadcast(plotting)
+broadcasted_df
+```
+
+Notice we now have a new column, called `output`, which has all the plots! To look at the first plot, we can print it with
+
+```{r }
+broadcasted_df$output[[1]]
+```
+
+Or, similarly:
+
+```{r }
+broadcasted_df %>% 
+  pull(output) %>% 
+  purrr::pluck(1)
+```
+
+You can also use it for modeling or other functions. For example:
 ```{r}
 tmp_df = nest_df %>% 
   sample_data(index = 3)
@@ -114,7 +156,9 @@ modeling <- function(data){
    lm(body_mass_g ~ bill_length_mm + bill_depth_mm, data = data)
 }
 
-nest_df %>% broadcast(modeling) %>% .$output
+nest_df %>% 
+  broadcast(modeling) %>% 
+  .$output
 
 ```
 
@@ -132,7 +176,7 @@ nest_df %>% broadcast(modeling) %>% .$output
 
 ### `broadcast_group()`
 
-`broadcast_group()` allows you to also use grouping variables in the function. It is still under develop so currently it only works in a more limited way. For example, you can include grouping variables as title for plots.
+`broadcast_group()` allows you to also use grouping variables in the function. It is still under development so currently it only works in a more limited way. For example, you can include grouping variables as the title for plots.
 
 
 ```{r}
@@ -147,16 +191,18 @@ plotting = function(data, species, island){
     labs(title = paste(species, island))
 }
 
+# example with a single plot
 plotting(df$data, df$species, df$island)
 
-nest_df = nest_df %>% broadcast_group(plotting)
+nest_df = nest_df %>% 
+  broadcast_group(plotting)
 
 nest_df$output[[1]]
 nest_df$output[[4]]
 
 ```
 
-# Testing::
+<!-- # Testing:: -->
 
 ```{r eval=FALSE, include=FALSE}
 tmp <- quo(
