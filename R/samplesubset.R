@@ -98,7 +98,8 @@ sample_row = function(nest_df, index, type = 'list'){
 
     group = nest_df[n, c(seq_len(ncol(nest_df)) - 1)]
 
-    group_name = group %>% group_vars()
+    group_name = group %>%
+      group_vars()
 
     for (i in group_name){
       name = paste('group', i, sep = '.')
@@ -106,9 +107,7 @@ sample_row = function(nest_df, index, type = 'list'){
     }
 
   }
-
   df
-
 }
 
 
@@ -127,11 +126,8 @@ sample_row = function(nest_df, index, type = 'list'){
 #'
 
 sample_group = function(nest_df, index){
-
   n = sampling_check(nest_df, index)
-
   nest_df[n, c(seq_len(ncol(nest_df)) - 1)]
-
 }
 
 
@@ -150,9 +146,6 @@ sample_group = function(nest_df, index){
 #'
 
 sample_data = function(nest_df, index){
-
   n = sampling_check(nest_df, index)
-
   nest_df$data[n][[1]]
-
 }

@@ -48,7 +48,11 @@ broadcast = function(nest_df, f, output_type = 'list', ...){
 #'
 broadcast_group = function(nest_df, f){
 
-  v = regmatches(deparse(f)[1], gregexpr("(?<=\\().*?(?=\\))", deparse(f)[1], perl=T))[[1]]
+  v = regmatches(
+    deparse(f)[1],
+    gregexpr("(?<=\\().*?(?=\\))", deparse(f)[1], perl=TRUE)
+  )
+  v = v[[1]]
 
   v2 = str_split(v, pattern = ',')[[1]]
 
@@ -58,7 +62,7 @@ broadcast_group = function(nest_df, f){
     command = paste0(command, i, '=nest_df$', i, ',')
   }
   command = substr(command,1,nchar(command)-1)
-  command = paste0(command, '),~{f(')
+  command = paste0(command, '), ~{f(')
 
   for (i in c(1:length(v2))){
     command = paste0(command, '..', i, ',')
@@ -70,5 +74,4 @@ broadcast_group = function(nest_df, f){
 
   nest_df$output = output
   nest_df
-
 }
