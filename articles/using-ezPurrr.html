@@ -49,7 +49,14 @@
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
 </form>
 
-      <ul class="navbar-nav"></ul>
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/wanjiag/ezPurrr/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 
     
@@ -63,26 +70,19 @@
       <img src="" class="logo" alt=""><h1>Example</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/wanjiag/ezPurrr/blob/HEAD/vignettes/using-ezPurrr.Rmd" class="external-link"><code>vignettes/using-ezPurrr.Rmd</code></a></small>
       <div class="d-none name"><code>using-ezPurrr.Rmd</code></div>
     </div>
 
     
     
+<p>The <strong>ezPurrr</strong> package is built on top of the <a href=""><strong>purrr</strong></a> library. The purpose of the package is to help make functional programming workflows more simple and efficient. Let’s start by loading ezPurrr and a few other packages we’ll use for data manipulation in this vignette.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wanjiag.github.io/ezPurrr/">ezPurrr</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wanjiag/ezPurrr" class="external-link">ezPurrr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'dplyr'</span>
-<span class="co">#&gt; The following objects are masked from 'package:stats':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     filter, lag</span>
-<span class="co">#&gt; The following objects are masked from 'package:base':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     intersect, setdiff, setequal, union</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></code></pre></div>
-<p>A nested dataset is needed to use functions.</p>
+<p><strong>ezPurrr</strong> requires a <em>nested</em> dataset. For example</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nest_df</span> <span class="op">&lt;-</span> <span class="fu">palmerpenguins</span><span class="fu">::</span><span class="va"><a href="https://allisonhorst.github.io/palmerpenguins/reference/penguins.html" class="external-link">penguins</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">island</span>, <span class="va">species</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
@@ -98,6 +98,8 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Adelie    Dream     <span style="color: #949494;">&lt;tibble [56 × 6]&gt;</span> </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Gentoo    Biscoe    <span style="color: #949494;">&lt;tibble [124 × 6]&gt;</span></span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Chinstrap Dream     <span style="color: #949494;">&lt;tibble [68 × 6]&gt;</span></span></code></pre></div>
+<p>This data frame has columns for the penguin species and the island on which the data was collected but, critically, an additional <em>data</em> column. This column is a list column that has all the data for the corresponding species/island row. All functions in <strong>ezPurrr</strong> require the data to first be in this format.</p>
+<p>From here, we want to be able to work with the data like normal, but it’s difficult when the data are in this list column format. This is where teh <code>sample_*()</code> functions come in.</p>
 <div class="section level2">
 <h2 id="sample_">
 <code>sample_*()</code><a class="anchor" aria-label="anchor" href="#sample_"></a>
@@ -106,12 +108,11 @@
 <h4 id="sample_row">
 <code>sample_row()</code><a class="anchor" aria-label="anchor" href="#sample_row"></a>
 </h4>
-<p>sample_row() returns one random or one particular row (with <code>index</code> argument) from the nested data as a list or a data frame. If returning a list (default), one row of the nested data will the first item of the list, and each of the other grouping variables will be another item in the list. If returning a data frame (with <code>type = df</code> argument), then the data frame will include one row of the nested data, as well as each grouping variable as a column with identical repeated content.</p>
+<p>The <code><a href="../reference/sample_row.html">sample_row()</a></code> function returns one random or one particular row (when an <code>index</code> argument is supplied) from the nested data as a list or a data frame. If returning a list (default), the first item of the list with be the data from the given row, while the remaining elements of the list will be the grouping variables from that row (i.e., the species and island for the corresponding row, in our previous example). If returning a data frame (with <code>type = df</code> argument), then the data frame will include one row of the nested data, as well as each grouping variable as a column (with identical repeated content).</p>
+<p>For example</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co"># In here, species and island are the grouping variables.</span>
-
-<span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/sample_row.html">sample_row</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/sample_row.html">sample_row</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; row 5 is selected randomly</span>
 <span class="co">#&gt; $data</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 68 × 6</span></span>
@@ -137,7 +138,9 @@
 <span class="co">#&gt; [1] Chinstrap</span>
 <span class="co">#&gt; Levels: Adelie Chinstrap Gentoo</span>
 
-<span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/sample_row.html">sample_row</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/sample_row.html">sample_row</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; $data</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 56 × 6</span></span>
 <span class="co">#&gt;    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year</span>
@@ -162,7 +165,9 @@
 <span class="co">#&gt; [1] Adelie</span>
 <span class="co">#&gt; Levels: Adelie Chinstrap Gentoo</span>
 
-<span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/sample_row.html">sample_row</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span>, type <span class="op">=</span> <span class="st">'df'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/sample_row.html">sample_row</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span>, type <span class="op">=</span> <span class="st">'df'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span>
 <span class="co">#&gt;   bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year</span>
 <span class="co">#&gt;            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
@@ -173,31 +178,34 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;">5</span>           36.4          17                 195        <span style="text-decoration: underline;">3</span>325 female  <span style="text-decoration: underline;">2</span>007</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">6</span>           39.2          21.1               196        <span style="text-decoration: underline;">4</span>150 male    <span style="text-decoration: underline;">2</span>007</span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 2 more variables: group.island &lt;fct&gt;, group.species &lt;fct&gt;</span></span></code></pre></div>
+<!-- I would probably describe each of the above in more detail -->
 </div>
 <div class="section level4">
 <h4 id="sample_data">
 <code>sample_data()</code><a class="anchor" aria-label="anchor" href="#sample_data"></a>
 </h4>
-<p>sample_data() returns one random or one particular data column (with <code>index</code> argument) from the nested data with no grouping variables.</p>
+<p>sample_data() returns one random or one particular data column (with <code>index</code> argument) from the nested data. The primary difference between <code><a href="../reference/sample_data.html">sample_data()</a></code> versus <code><a href="../reference/sample_row.html">sample_row()</a></code> is that the grouping variables are not returned - just the data. For example:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/sample_data.html">sample_data</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; row 5 is selected randomly</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 68 × 6</span></span>
+<code class="sourceCode R"><span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/sample_data.html">sample_data</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; row 2 is selected randomly</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 44 × 6</span></span>
 <span class="co">#&gt;    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year</span>
 <span class="co">#&gt;             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>           46.5          17.9               192        <span style="text-decoration: underline;">3</span>500 female  <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>           50            19.5               196        <span style="text-decoration: underline;">3</span>900 male    <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>           51.3          19.2               193        <span style="text-decoration: underline;">3</span>650 male    <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>           45.4          18.7               188        <span style="text-decoration: underline;">3</span>525 female  <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>           52.7          19.8               197        <span style="text-decoration: underline;">3</span>725 male    <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>           45.2          17.8               198        <span style="text-decoration: underline;">3</span>950 female  <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>           46.1          18.2               178        <span style="text-decoration: underline;">3</span>250 female  <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>           51.3          18.2               197        <span style="text-decoration: underline;">3</span>750 male    <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>           46            18.9               195        <span style="text-decoration: underline;">4</span>150 female  <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span>           51.3          19.9               198        <span style="text-decoration: underline;">3</span>700 male    <span style="text-decoration: underline;">2</span>007</span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 58 more rows</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>           37.8          18.3               174        <span style="text-decoration: underline;">3</span>400 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>           37.7          18.7               180        <span style="text-decoration: underline;">3</span>600 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>           35.9          19.2               189        <span style="text-decoration: underline;">3</span>800 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>           38.2          18.1               185        <span style="text-decoration: underline;">3</span>950 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>           38.8          17.2               180        <span style="text-decoration: underline;">3</span>800 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>           35.3          18.9               187        <span style="text-decoration: underline;">3</span>800 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>           40.6          18.6               183        <span style="text-decoration: underline;">3</span>550 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>           40.5          17.9               187        <span style="text-decoration: underline;">3</span>200 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>           37.9          18.6               172        <span style="text-decoration: underline;">3</span>150 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span>           40.5          18.9               180        <span style="text-decoration: underline;">3</span>950 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 34 more rows</span></span>
 
-<span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/sample_data.html">sample_data</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/sample_data.html">sample_data</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 56 × 6</span></span>
 <span class="co">#&gt;    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year</span>
 <span class="co">#&gt;             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
@@ -217,17 +225,19 @@
 <h4 id="sample_group">
 <code>sample_group()</code><a class="anchor" aria-label="anchor" href="#sample_group"></a>
 </h4>
-<p>sample_group() returns one random or one particular grouping columns (with <code>index</code> argument) from the nested dataset with no data.</p>
+<p>Finally, <code><a href="../reference/sample_group.html">sample_group()</a></code> returns one random or one particular grouping columns (with <code>index</code> argument) from the nested dataset with no data. For example:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/sample_group.html">sample_group</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; row 2 is selected randomly</span>
+<code class="sourceCode R"><span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/sample_group.html">sample_group</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; row 3 is selected randomly</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 2</span></span>
 <span class="co">#&gt; <span style="color: #949494;"># Groups:   island, species [1]</span></span>
 <span class="co">#&gt;   species island</span>
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Adelie  Biscoe</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Adelie  Dream</span>
 
-<span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/sample_group.html">sample_group</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/sample_group.html">sample_group</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 2</span></span>
 <span class="co">#&gt; <span style="color: #949494;"># Groups:   island, species [1]</span></span>
 <span class="co">#&gt;   species island</span>
@@ -243,32 +253,72 @@
 <h4 id="broadcast-1">
 <code>broadcast()</code><a class="anchor" aria-label="anchor" href="#broadcast-1"></a>
 </h4>
-<p>You can use the sampling dataset to test the code you want to be applied for each row, such as figures or <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> models.</p>
-<p>Plotting:</p>
+<p>Generally, we will use the data we have sampled to conduct some operations. Once we’ve conducted those operations we just need to wrap them all in a function, then <code><a href="../reference/broadcast.html">broadcast()</a></code> them across the sets of data (i.e., all rows).</p>
+<p>In other words, the sampling dataset is used to test the code you want to be applied for each row, such as figures, models, or transformations.</p>
+<p>Let’s look at an example for plotting. First, we create our sample data.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="../reference/sample_data.html">sample_data</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">bill_length_mm</span>,
-                           y <span class="op">=</span> <span class="va">bill_depth_mm</span>,
-                           color <span class="op">=</span> <span class="va">body_mass_g</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p><img src="using-ezPurrr_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
-<p>Then, by wrapping it into a function, it can be easily broadcasted into each row of the nested dataset.</p>
+<code class="sourceCode R"><span class="va">samp</span> <span class="op">&lt;-</span> <span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/sample_data.html">sample_data</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+
+<span class="va">samp</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 56 × 6</span></span>
+<span class="co">#&gt;    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year</span>
+<span class="co">#&gt;             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>           39.5          16.7               178        <span style="text-decoration: underline;">3</span>250 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>           37.2          18.1               178        <span style="text-decoration: underline;">3</span>900 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>           39.5          17.8               188        <span style="text-decoration: underline;">3</span>300 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>           40.9          18.9               184        <span style="text-decoration: underline;">3</span>900 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>           36.4          17                 195        <span style="text-decoration: underline;">3</span>325 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>           39.2          21.1               196        <span style="text-decoration: underline;">4</span>150 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>           38.8          20                 190        <span style="text-decoration: underline;">3</span>950 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>           42.2          18.5               180        <span style="text-decoration: underline;">3</span>550 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>           37.6          19.3               181        <span style="text-decoration: underline;">3</span>300 female  <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span>           39.8          19.1               184        <span style="text-decoration: underline;">4</span>650 male    <span style="text-decoration: underline;">2</span>007</span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 46 more rows</span></span></code></pre></div>
+<p>Next, we write the code to create our plot, using <code>samp</code> as our sample data to test our code.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">plotting</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span>
-  <span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">bill_length_mm</span>,
-                             y <span class="op">=</span> <span class="va">bill_depth_mm</span>,
-                             color <span class="op">=</span> <span class="va">body_mass_g</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="va">broadcasted_df</span> <span class="op">=</span> <span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/broadcast.html">broadcast</a></span><span class="op">(</span><span class="va">plotting</span><span class="op">)</span>
-
-<span class="va">broadcasted_df</span><span class="op">$</span><span class="va">output</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-<span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_point).</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">samp</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">bill_length_mm</span>,
+                 y <span class="op">=</span> <span class="va">bill_depth_mm</span>,
+                 color <span class="op">=</span> <span class="va">body_mass_g</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="using-ezPurrr_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
-<p>You can also use it for modeling or other functions:</p>
+<p>Finally, we can wrap this into a function.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">plotting</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">bill_length_mm</span>,
+                   y <span class="op">=</span> <span class="va">bill_depth_mm</span>,
+                   color <span class="op">=</span> <span class="va">body_mass_g</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>Notice the code above is exactly as we had before, we’ve just changed our sample data set to <code>data</code> as an argument within a function. Normally, writing functions for plotting (and many other functions in the tidyverse) is difficult because of non-standard evaluation, but in this case we don’t have to worry about any of that.</p>
+<p>Now, we can <code><a href="../reference/broadcast.html">broadcast()</a></code> the function to all of the data!</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">broadcasted_df</span> <span class="op">=</span> <span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/broadcast.html">broadcast</a></span><span class="op">(</span><span class="va">plotting</span><span class="op">)</span>
+<span class="va">broadcasted_df</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 4</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># Groups:   island, species [5]</span></span>
+<span class="co">#&gt;   species   island    data               output</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;list&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Adelie    Torgersen <span style="color: #949494;">&lt;tibble [52 × 6]&gt;</span>  <span style="color: #949494;">&lt;gg&gt;</span>  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Adelie    Biscoe    <span style="color: #949494;">&lt;tibble [44 × 6]&gt;</span>  <span style="color: #949494;">&lt;gg&gt;</span>  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Adelie    Dream     <span style="color: #949494;">&lt;tibble [56 × 6]&gt;</span>  <span style="color: #949494;">&lt;gg&gt;</span>  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Gentoo    Biscoe    <span style="color: #949494;">&lt;tibble [124 × 6]&gt;</span> <span style="color: #949494;">&lt;gg&gt;</span>  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Chinstrap Dream     <span style="color: #949494;">&lt;tibble [68 × 6]&gt;</span>  <span style="color: #949494;">&lt;gg&gt;</span></span></code></pre></div>
+<p>Notice we now have a new column, called <code>output</code>, which has all the plots! To look at the first plot, we can print it with</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">broadcasted_df</span><span class="op">$</span><span class="va">output</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
+<span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_point).</span></code></pre></div>
+<p><img src="using-ezPurrr_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<p>Or, similarly:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">broadcasted_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html" class="external-link">pluck</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_point).</span></code></pre></div>
+<p><img src="using-ezPurrr_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p>You can also use it for modeling or other functions. For example:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmp_df</span> <span class="op">=</span> <span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/sample_data.html">sample_data</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 
@@ -287,7 +337,9 @@
    <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">body_mass_g</span> <span class="op">~</span> <span class="va">bill_length_mm</span> <span class="op">+</span> <span class="va">bill_depth_mm</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/broadcast.html">broadcast</a></span><span class="op">(</span><span class="va">modeling</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="va">.</span><span class="op">$</span><span class="va">output</span>
+<span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/broadcast.html">broadcast</a></span><span class="op">(</span><span class="va">modeling</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="va">.</span><span class="op">$</span><span class="va">output</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
@@ -337,7 +389,7 @@
 <span class="co">#&gt;    (Intercept)  bill_length_mm   bill_depth_mm  </span>
 <span class="co">#&gt;        -356.11           23.82          158.84</span></code></pre></div>
 <p>Instead of a list, you can also make the output a number (double).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">modeling</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span>
   <span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">body_mass_g</span> <span class="op">~</span> <span class="va">bill_length_mm</span> <span class="op">+</span> <span class="va">bill_depth_mm</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span>
@@ -369,8 +421,8 @@
 <h4 id="broadcast_group">
 <code>broadcast_group()</code><a class="anchor" aria-label="anchor" href="#broadcast_group"></a>
 </h4>
-<p><code><a href="../reference/broadcast_group.html">broadcast_group()</a></code> allows you to also use grouping variables in the function. It is still under develop so currently it only works in a more limited way. For example, you can include grouping variables as title for plots.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/broadcast_group.html">broadcast_group()</a></code> allows you to also use grouping variables in the function. It is still under development so currently it only works in a more limited way. For example, you can include grouping variables as the title for plots.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df</span> <span class="op">=</span> <span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="../reference/sample_row.html">sample_row</a></span><span class="op">(</span>index <span class="op">=</span> <span class="fl">3</span>, type <span class="op">=</span> <span class="st">'list'</span><span class="op">)</span>
 
@@ -382,24 +434,23 @@
     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">species</span>, <span class="va">island</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span>
 
+<span class="co"># example with a single plot</span>
 <span class="fu">plotting</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">data</span>, <span class="va">df</span><span class="op">$</span><span class="va">species</span>, <span class="va">df</span><span class="op">$</span><span class="va">island</span><span class="op">)</span></code></pre></div>
-<p><img src="using-ezPurrr_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p><img src="using-ezPurrr_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">nest_df</span> <span class="op">=</span> <span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/broadcast_group.html">broadcast_group</a></span><span class="op">(</span><span class="va">plotting</span><span class="op">)</span>
+<span class="va">nest_df</span> <span class="op">=</span> <span class="va">nest_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/broadcast_group.html">broadcast_group</a></span><span class="op">(</span><span class="va">plotting</span><span class="op">)</span>
 
 <span class="va">nest_df</span><span class="op">$</span><span class="va">output</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_point).</span></code></pre></div>
-<p><img src="using-ezPurrr_files/figure-html/unnamed-chunk-10-2.png" width="700"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<p><img src="using-ezPurrr_files/figure-html/unnamed-chunk-14-2.png" width="700"></p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nest_df</span><span class="op">$</span><span class="va">output</span><span class="op">[[</span><span class="fl">4</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_point).</span></code></pre></div>
-<p><img src="using-ezPurrr_files/figure-html/unnamed-chunk-10-3.png" width="700"></p>
+<p><img src="using-ezPurrr_files/figure-html/unnamed-chunk-14-3.png" width="700"></p>
+<!-- # Testing:: -->
 </div>
-</div>
-<div class="section level2">
-<h2 id="testing">Testing::<a class="anchor" aria-label="anchor" href="#testing"></a>
-</h2>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
@@ -414,7 +465,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
     </footer>
